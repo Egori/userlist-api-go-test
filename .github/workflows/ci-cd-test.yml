@@ -20,6 +20,11 @@ jobs:
         env:
           TEST_SERVER: ${{ secrets.TEST_SERVER }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Add SSH key to known_hosts
+        run: |
+            mkdir -p ~/.ssh
+            ssh-keyscan -H ${TEST_SERVER} >> ~/.ssh/known_hosts
+            chmod 600 ~/.ssh/known_hosts
         run: |
           echo "${SSH_PRIVATE_KEY}" > ssh_key
           chmod 600 ssh_key
