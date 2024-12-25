@@ -39,6 +39,7 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
           chmod 600 ssh_key
+          cd $GITHUB_WORKSPACE  # Переход в корневую директорию репозитория
           # Копируем файлы на сервер
           scp -i ssh_key -r . test@${{ secrets.TEST_SERVER }}:/home/test/userlist-api
 
