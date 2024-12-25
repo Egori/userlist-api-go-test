@@ -30,7 +30,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
           chmod 600 ssh_key
           # Создаём директорию на сервере
-          ssh -i ssh_key user@${{ secrets.TEST_SERVER }} "mkdir -p /home/test/userlist-api"
+          ssh -i ssh_key test@${{ secrets.TEST_SERVER }} "mkdir -p /home/test/userlist-api"
 
       - name: Copy files to the server
         env:
@@ -40,14 +40,14 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
           chmod 600 ssh_key
           # Копируем файлы на сервер
-          scp -i ssh_key -r . user@${{ secrets.TEST_SERVER }}:/home/test/userlist-api
+          scp -i ssh_key -r . test@${{ secrets.TEST_SERVER }}:/home/test/userlist-api
 
       - name: Deploy application
         env:
           TEST_SERVER: ${{ secrets.TEST_SERVER }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          ssh -i ssh_key user@${{ secrets.TEST_SERVER }} << 'EOF'
+          ssh -i ssh_key test@${{ secrets.TEST_SERVER }} << 'EOF'
             cd /home/test/userlist-api
             docker-compose down || true
             docker-compose up -d --build
