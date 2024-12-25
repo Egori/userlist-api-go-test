@@ -1,0 +1,48 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Create directory on the server
+        env:
+          TEST_SERVER: ${{ secrets.TEST_SERVER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "${SSH_PRIVATE_KEY}" > ssh_key
+          chmod 600 ssh_key
+          # Создаём директорию на сервере
+          ssh -i ssh_key user@${TEST_SERVER} "mkdir -p /home/test/userlist-api"
+
+      - name: Copy files to the server
+        env:
+          TEST_SERVER: ${{ secrets.TEST_SERVER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "${SSH_PRIVATE_KEY}" > ssh_key
+          chmod 600 ssh_key
+          # Копируем файлы на сервер
+          scp -i ssh_key -r . user@${TEST_SERVER}:/home/test/userlist-api
+
+      - name: Deploy application
+        env:
+          TEST_SERVER: ${{ secrets.TEST_SERVER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          ssh -i ssh_key user@${TEST_SERVER} << 'EOF'
+            cd /home/test/userlist-api
+            docker-compose down || true
+            docker-compose up -d --build
+          EOF
