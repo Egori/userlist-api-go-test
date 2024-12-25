@@ -1,0 +1,24 @@
+ 
+version: "3.9"
+services:
+  postgres:
+    image: postgres:17
+    container_name: postgres_test
+    environment:
+      POSTGRES_USER: users_test
+      POSTGRES_PASSWORD: 654321
+      POSTGRES_DB: users_test
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: "no"  # Не перезапускать автоматически
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.28.0.0/16"  
+volumes:
+  postgres_data:
