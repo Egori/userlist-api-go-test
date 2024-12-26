@@ -45,7 +45,7 @@ jobs:
         run: go mod tidy
 
       - name: Run tests
-        run: ./internal/user/tests/service_test.go -v
+        run: go test ./internal/user/tests/service_test.go -v
 
   build-and-deploy:
     name: Build and Deploy
