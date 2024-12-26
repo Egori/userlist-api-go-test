@@ -42,6 +42,7 @@ jobs:
           cd $GITHUB_WORKSPACE  # Переход в корневую директорию репозитория
           # Копируем файлы на сервер
           scp -i ssh_key userlist-api test@${{ secrets.TEST_SERVER }}:/home/test/userlist-api
+          scp -i ssh_key .env test@${{ secrets.TEST_SERVER }}:/home/test/userlist-api
           scp -i ssh_key Dockerfile test@${{ secrets.TEST_SERVER }}:/home/test/userlist-api
           scp -i ssh_key docker-compose.yml test@${{ secrets.TEST_SERVER }}:/home/test/userlist-api
 
