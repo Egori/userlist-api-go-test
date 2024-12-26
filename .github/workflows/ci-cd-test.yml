@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
- lint-test-build:
+  lint-test-build:
     name: Lint, Test, and Build
     runs-on: ubuntu-latest
     steps:
